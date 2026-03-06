@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMART:SKED</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#e8f5e9;--surface:#f1faf2;--surface2:#e0f2e1;--surface3:#c8e6c9;
+  --border:#a5d6a7;--accent:#2e7d32;--accent2:#388e3c;--green:#1b5e20;
+  --yellow:#f9a825;--red:#c62828;--orange:#e65100;
+  --text:#1a2e1b;--text2:#4a6b4c;--text3:#7a9b7c;
+  --r:12px;--shadow:0 2px 8px rgba(46,125,50,.10);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
+
+/* HEADER */
+header{background:var(--accent);padding:10px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;row-gap:8px;}
+.logo{background:rgba(255,255,255,.2);border-radius:10px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:#fff;flex-shrink:0;}
+.ht{flex-shrink:0;}
+.ht h1{font-size:17px;font-weight:800;color:#fff;line-height:1.2;}
+.ht p{font-size:10px;color:rgba(255,255,255,.7);margin-top:2px;}
+.hm{margin-left:auto;display:flex;gap:6px;align-items:center;flex-wrap:wrap;row-gap:5px;}
+.chip{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:4px 12px;font-size:11px;color:rgba(255,255,255,.9);white-space:nowrap;}
+.chip span{color:#fff;font-weight:700;}
+.chip-edit{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);border-radius:20px;padding:4px 11px;font-size:11px;color:#fff;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;outline:none;min-width:70px;max-width:130px;text-align:center;cursor:text;}
+.chip-edit:focus{background:rgba(255,255,255,.28);border-color:rgba(255,255,255,.8);}
+.chip-label{color:rgba(255,255,255,.7);font-size:11px;white-space:nowrap;}
+
+/* MAIN LAYOUT */
+.main-grid{display:grid;grid-template-columns:1fr;gap:16px;padding:16px 20px;flex-grow:1;align-items:start;}
+.content-left{display:flex;flex-direction:column;gap:16px;}
+
+/* STAT CARDS */
+.stats-header{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.stat-card-top{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;box-shadow:var(--shadow);display:flex;flex-direction:column;}
+.stat-title-top{font-size:10px;font-weight:700;text-transform:uppercase;color:var(--text2);margin-bottom:3px;}
+.stat-value-top{font-size:26px;font-weight:800;font-family:'JetBrains Mono',monospace;color:var(--accent);}
+.stat-desc-top{font-size:10px;color:var(--text2);margin-top:2px;}
+.cA{color:var(--accent)!important;}.cY{color:var(--yellow)!important;}.cR{color:var(--red)!important;}.cG{color:var(--green)!important;}
+
+/* CONTENT CARD */
+.content-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;box-shadow:var(--shadow);}
+.card-header{display:flex;align-items:center;gap:9px;margin-bottom:14px;flex-wrap:wrap;}
+.card-icon{width:32px;height:32px;border-radius:9px;background:var(--surface2);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.card-title{font-size:14px;font-weight:700;text-transform:uppercase;color:var(--accent);flex-grow:1;}
+
+/* QUIZ SCORES TABLE inline */
+.quiz-scores-wrap{overflow-x:auto;border-radius:10px;border:1px solid var(--border);}
+.quiz-scores-wrap table{width:100%;border-collapse:collapse;font-size:12px;}
+.quiz-scores-wrap thead th{background:var(--surface3);padding:8px 10px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;color:var(--text2);border-bottom:1px solid var(--border);white-space:nowrap;}
+.quiz-scores-wrap tbody tr{border-bottom:1px solid var(--border);}
+.quiz-scores-wrap tbody tr:last-child{border-bottom:none;}
+.quiz-scores-wrap tbody tr:hover{background:rgba(46,125,50,.03);}
+.quiz-scores-wrap tbody td{padding:7px 10px;color:var(--text);vertical-align:middle;}
+
+/* QUIZ TAB BAR */
+.quiz-tab-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;align-items:center;}
+.quiz-tab-wrap{display:flex;align-items:center;background:var(--surface2);border:1.5px solid var(--border);border-radius:20px;overflow:hidden;transition:border-color .2s;}
+.quiz-tab-wrap:has(.quiz-tab.active){border-color:var(--accent);background:var(--accent);}
+.quiz-tab{padding:5px 12px;border-radius:0;border:none;background:transparent;color:var(--text2);font-size:11px;font-weight:700;cursor:pointer;transition:all .2s;font-family:'Plus Jakarta Sans',sans-serif;}
+.quiz-tab.active{color:#fff;}
+.quiz-tab:hover:not(.active){color:var(--accent);}
+.quiz-tab-del{background:transparent;border:none;border-left:1px solid rgba(0,0,0,.08);color:var(--text3);font-size:10px;font-weight:800;cursor:pointer;padding:5px 7px;transition:background .15s,color .15s;line-height:1;}
+.quiz-tab-wrap:has(.quiz-tab.active) .quiz-tab-del{border-left-color:rgba(255,255,255,.2);color:rgba(255,255,255,.6);}
+.quiz-tab-del:hover{background:rgba(198,40,40,.15);color:var(--red);}
+.quiz-tab-wrap:has(.quiz-tab.active) .quiz-tab-del:hover{background:rgba(255,255,255,.15);color:#fff;}
+
+/* ACTION BUTTONS */
+.action-row{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
+.take-quiz-btn{background:var(--accent);color:#fff;border:none;border-radius:24px;padding:9px 22px;font-size:12px;font-weight:800;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;box-shadow:0 2px 8px rgba(46,125,50,.25);transition:background .2s;display:flex;align-items:center;gap:6px;}
+.take-quiz-btn:hover{background:var(--green);}
+.review-btn{background:var(--surface2);color:var(--accent);border:2px solid var(--accent);border-radius:24px;padding:9px 22px;font-size:12px;font-weight:800;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;transition:background .2s;display:flex;align-items:center;gap:6px;}
+.review-btn:hover{background:var(--surface3);}
+
+/* ITEM GRID (term / management) */
+.item-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.item-card{background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:11px;display:flex;align-items:center;gap:9px;cursor:pointer;transition:background .2s,border-color .2s;position:relative;}
+.item-card:hover{background:var(--surface3);border-color:var(--accent);}
+.item-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;flex-shrink:0;}
+.quiz-icon{background:rgba(46,125,50,.15);color:var(--accent);}
+.term-icon{background:rgba(56,142,60,.15);color:var(--accent2);}
+.item-details{flex-grow:1;min-width:0;}
+.item-name{font-size:12px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.item-meta{font-size:10px;color:var(--text2);}
+.item-arrow{font-size:13px;color:var(--text3);flex-shrink:0;}
+
+/* RIGHT PANEL — mastery only */
+.mastery-chart-container{display:flex;flex-direction:column;align-items:center;text-align:center;padding:4px 0;}
+.donut-hole-text{font-size:13px;font-weight:700;fill:var(--accent);}
+.mastery-legend{margin-top:12px;width:100%;font-size:11px;}
+.legend-item{display:flex;justify-content:space-between;align-items:center;padding:3px 0;color:var(--text2);}
+.legend-key{display:flex;align-items:center;gap:7px;}
+.legend-color{width:10px;height:10px;border-radius:3px;flex-shrink:0;}
+.legend-count{font-weight:700;color:var(--text);font-family:'JetBrains Mono',monospace;}
+
+/* UNIVERSAL MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;display:none;align-items:flex-start;justify-content:center;padding:16px 12px;overflow-y:auto;}
+.modal-overlay.open{display:flex;}
+.modal-box{background:var(--surface);border:1px solid var(--border);border-radius:14px;width:100%;max-width:960px;box-shadow:0 16px 50px rgba(0,0,0,.2);display:flex;flex-direction:column;max-height:calc(100vh - 32px);}
+.modal-header{padding:15px 18px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:9px;flex-shrink:0;}
+.modal-title{font-size:15px;font-weight:800;color:var(--accent);flex-grow:1;}
+.modal-close{background:var(--surface2);border:1px solid var(--border);color:var(--text2);font-size:15px;cursor:pointer;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background .2s;flex-shrink:0;}
+.modal-close:hover{background:var(--surface3);}
+.modal-body{padding:16px 18px;overflow-y:auto;flex-grow:1;}
+.modal-footer{padding:10px 18px;border-top:1px solid var(--border);display:flex;gap:7px;flex-wrap:wrap;align-items:center;flex-shrink:0;}
+
+/* TABLES inside modal */
+.tw{overflow-x:auto;border-radius:var(--r);border:1px solid var(--border);}
+table{width:100%;border-collapse:collapse;font-size:12px;}
+thead th{background:var(--surface3);padding:8px 11px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--text2);border-bottom:1px solid var(--border);white-space:nowrap;}
+tbody tr{border-bottom:1px solid var(--border);}
+tbody tr:last-child{border-bottom:none;}
+tbody tr:hover{background:rgba(46,125,50,.03);}
+tbody td{padding:7px 11px;color:var(--text);vertical-align:middle;}
+.nm{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text2);}
+.badge{display:inline-block;padding:3px 8px;border-radius:20px;font-size:10px;font-weight:700;white-space:nowrap;}
+.bM{background:rgba(27,94,32,.12);color:#1b5e20;}
+.bC{background:rgba(46,125,50,.12);color:#2e7d32;}
+.bW{background:rgba(56,142,60,.15);color:#388e3c;}
+.bA{background:rgba(249,168,37,.15);color:#f9a825;}
+.bL{background:rgba(230,81,0,.12);color:#e65100;}
+.bN{background:rgba(198,40,40,.12);color:#c62828;}
+.bX{background:rgba(120,144,156,.12);color:#607d8b;}
+.bY{background:rgba(198,40,40,.12);color:#c62828;font-weight:800;}
+.bP{background:rgba(27,94,32,.12);color:#1b5e20;}
+.ed,.si,.de{background:transparent;border:1px solid transparent;border-radius:5px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;padding:3px 6px;transition:all .2s;}
+.ed:hover,.si:hover,.de:hover{border-color:var(--border);}
+.ed:focus,.si:focus,.de:focus{outline:none;border-color:var(--accent);background:var(--surface3);}
+.si{width:56px;background:var(--surface2);border:1px solid var(--border);text-align:center;}
+.de{border-style:dashed;color:var(--accent);}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:6px 13px;border:none;border-radius:7px;font-family:inherit;font-size:11px;font-weight:700;cursor:pointer;transition:opacity .2s,background .2s;}
+.bAdd{background:rgba(27,94,32,.12);color:var(--green);border:1px solid rgba(27,94,32,.25);}
+.bAdd:hover{background:rgba(27,94,32,.2);}
+.bDel{background:rgba(198,40,40,.08);color:var(--red);border:1px solid rgba(198,40,40,.2);}
+.bDel:hover{background:rgba(198,40,40,.16);}
+.bSave{background:var(--surface2);color:var(--text2);border:1px solid var(--border);}
+.bSave:hover{background:var(--surface3);}
+.tn{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;color:#fff;}
+.br{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px;align-items:center;}
+.pw{display:inline-block;width:60px;height:5px;background:var(--surface3);border-radius:3px;vertical-align:middle;overflow:hidden;}
+.pf{height:100%;border-radius:3px;}
+.gender-header{background:var(--surface3);padding:6px 11px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;color:var(--accent);border-bottom:1px solid var(--border);}
+
+/* MASTERLIST 2-column layout */
+.ml-dual{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.ml-col-header{font-size:11px;font-weight:800;text-transform:uppercase;color:var(--accent);padding:7px 10px;background:var(--surface3);border-radius:8px 8px 0 0;border:1px solid var(--border);border-bottom:none;display:flex;align-items:center;gap:6px;}
+.ml-col-body{border:1px solid var(--border);border-radius:0 0 8px 8px;overflow:hidden;}
+.ml-row{display:flex;align-items:center;gap:7px;padding:7px 10px;border-bottom:1px solid var(--border);background:var(--surface);transition:background .15s;}
+.ml-row:last-child{border-bottom:none;}
+.ml-row:hover{background:var(--surface2);}
+.ml-num{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);width:18px;flex-shrink:0;}
+.ml-name{flex-grow:1;min-width:0;}
+.ml-name input{width:100%;background:transparent;border:1px solid transparent;border-radius:5px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:600;padding:2px 5px;}
+.ml-name input:focus{outline:none;border-color:var(--accent);background:var(--surface3);}
+.ml-del{background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;padding:2px 4px;border-radius:4px;transition:color .2s,background .2s;line-height:1;}
+.ml-del:hover{color:var(--red);background:rgba(198,40,40,.08);}
+
+/* ADD STUDENT FORM */
+.add-student-form{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:13px;margin-bottom:14px;display:flex;gap:9px;align-items:flex-end;flex-wrap:wrap;}
+.add-student-form label{font-size:11px;font-weight:700;color:var(--text2);display:block;margin-bottom:3px;}
+.add-student-form input[type=text]{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:7px 10px;font-size:12px;font-family:'Plus Jakarta Sans',sans-serif;color:var(--text);outline:none;min-width:160px;}
+.add-student-form input[type=text]:focus{border-color:var(--accent);}
+.gender-select{display:flex;gap:6px;}
+.gender-opt{display:flex;align-items:center;gap:5px;cursor:pointer;font-size:12px;font-weight:600;}
+.gender-opt input{accent-color:var(--accent);width:14px;height:14px;}
+
+/* REVIEW MODULE */
+.review-drop-zone{border:2px dashed var(--border);border-radius:10px;padding:32px 18px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;background:var(--surface2);}
+.review-drop-zone:hover,.review-drop-zone.drag-over{border-color:var(--accent);background:var(--surface3);}
+.review-drop-icon{font-size:36px;margin-bottom:8px;}
+.review-drop-title{font-size:14px;font-weight:700;color:var(--accent);margin-bottom:4px;}
+.review-drop-sub{font-size:11px;color:var(--text2);}
+.pdf-list{display:flex;flex-direction:column;gap:7px;}
+.pdf-item{display:flex;align-items:center;gap:9px;background:var(--surface2);border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;cursor:pointer;transition:background .2s,border-color .2s;}
+.pdf-item:hover,.pdf-item.active{background:var(--surface3);border-color:var(--accent);}
+.pdf-item-icon{font-size:20px;flex-shrink:0;}
+.pdf-item-name{flex-grow:1;font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pdf-item-size{font-size:10px;color:var(--text3);flex-shrink:0;}
+.pdf-item-del{background:none;border:none;color:var(--text3);cursor:pointer;font-size:15px;padding:2px 5px;border-radius:4px;transition:color .2s,background .2s;line-height:1;flex-shrink:0;}
+.pdf-item-del:hover{color:var(--red);background:rgba(198,40,40,.08);}
+.pdf-viewer-wrap{margin-top:12px;border-radius:10px;overflow:hidden;border:1px solid var(--border);}
+.pdf-viewer-label{padding:9px 13px;background:var(--surface3);border-bottom:1px solid var(--border);font-size:11px;font-weight:700;color:var(--text2);display:flex;align-items:center;gap:6px;}
+.pdf-viewer-wrap iframe{width:100%;height:65vh;border:none;display:block;}
+
+/* DARK QUIZ MODAL */
+.quiz-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1100;display:none;align-items:flex-start;justify-content:center;padding:16px 12px;overflow-y:auto;}
+.quiz-modal-overlay.open{display:flex;}
+.quiz-modal-inner{background:linear-gradient(160deg,#e8f5e9 0%,#f1faf2 60%,#c8e6c9 100%);border-radius:18px;width:100%;max-width:740px;padding:22px;box-shadow:0 16px 50px rgba(46,125,50,.18);position:relative;color:var(--text);border:1px solid var(--border);}
+.quiz-modal-close{position:absolute;top:13px;right:13px;background:var(--surface2);border:1px solid var(--border);color:var(--text2);font-size:16px;cursor:pointer;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background .2s;}
+.quiz-modal-close:hover{background:var(--surface3);}
+.qm-tabs{display:flex;justify-content:center;gap:7px;flex-wrap:wrap;margin-bottom:18px;}
+.qm-tab-btn{padding:6px 16px;border-radius:50px;border:2px solid var(--border);background:var(--surface2);color:var(--text2);font-weight:700;font-size:.85rem;cursor:pointer;position:relative;transition:all .25s;font-family:'Plus Jakarta Sans',sans-serif;}
+.qm-tab-btn.active{border-color:var(--accent);background:var(--accent);color:#fff;}
+.qm-tab-badge{position:absolute;top:-7px;right:-7px;border-radius:50%;width:17px;height:17px;font-size:.58rem;font-weight:900;display:flex;align-items:center;justify-content:center;color:#fff;border:2px solid #0f0c29;}
+.qm-badge-good{background:#22c55e;}.qm-badge-ok{background:#f59e0b;}.qm-badge-bad{background:#ef4444;}
+.qm-score-banner{margin:0 auto 16px;border-radius:12px;padding:12px 16px;display:none;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:9px;}
+.qm-score-banner.show{display:flex;}
+.qm-score-banner.good{background:linear-gradient(135deg,rgba(46,125,50,.15),rgba(46,125,50,.04));border:1px solid var(--accent);}
+.qm-score-banner.ok{background:linear-gradient(135deg,rgba(245,158,11,.2),rgba(245,158,11,.05));border:1px solid #f59e0b;}
+.qm-score-banner.bad{background:linear-gradient(135deg,rgba(239,68,68,.2),rgba(239,68,68,.05));border:1px solid #ef4444;}
+.qm-score-num{font-size:1.2rem;font-weight:800;}
+.qm-score-sub{color:var(--text2);font-size:.8rem;margin-top:2px;}
+.qm-reset-btn{padding:5px 14px;border-radius:50px;border:1px solid var(--border);background:var(--surface2);color:var(--text2);cursor:pointer;font-size:.8rem;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;}
+.qm-reset-btn:hover{background:var(--surface3);color:var(--accent);}
+.qm-card{background:var(--surface);border-radius:12px;border:1px solid var(--border);padding:18px;}
+.qm-quiz-title{font-size:1.1rem;font-weight:800;margin-bottom:3px;}
+.qm-quiz-subtitle{color:var(--accent2);font-weight:600;margin-bottom:8px;font-size:.9rem;}
+.qm-quiz-instruction{color:var(--text2);font-size:.82rem;line-height:1.5;border-left:3px solid var(--accent);padding-left:10px;margin-bottom:16px;}
+.qm-match-box{margin-bottom:16px;background:var(--surface2);border-radius:9px;padding:12px;border:1px solid var(--border);}
+.qm-match-box-title{font-size:.68rem;color:var(--accent);text-transform:uppercase;letter-spacing:.05em;font-weight:700;margin-bottom:6px;}
+.qm-match-item{font-size:.76rem;color:var(--text2);line-height:1.4;margin-bottom:3px;}
+.qm-match-key{font-weight:700;color:var(--accent);margin-right:5px;}
+.qm-questions{display:flex;flex-direction:column;gap:12px;}
+.qm-q-item{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;transition:background .3s,border-color .3s;}
+.qm-q-item.correct{background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.3);}
+.qm-q-item.wrong{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.3);}
+.qm-q-header{display:flex;gap:8px;margin-bottom:8px;align-items:flex-start;}
+.qm-q-num{min-width:22px;height:22px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.66rem;font-weight:800;color:#fff;flex-shrink:0;}
+.qm-q-text{font-size:.82rem;line-height:1.6;color:var(--text);}
+.qm-choices-row{display:flex;gap:5px;flex-wrap:wrap;align-items:center;}
+.qm-choices-col{display:flex;flex-direction:column;gap:4px;}
+.qm-choice-btn{border-radius:50px;border:1.5px solid var(--border);background:var(--surface);color:var(--text2);font-weight:700;cursor:pointer;transition:all .2s;font-size:.82rem;padding:4px 13px;font-family:'Plus Jakarta Sans',sans-serif;}
+.qm-choice-btn.pill-lg{padding:6px 10px;border-radius:7px;text-align:left;font-weight:400;}
+.qm-choice-btn.circle{width:30px;height:30px;padding:0;display:flex;align-items:center;justify-content:center;font-size:.78rem;}
+.qm-choice-btn.mcq-btn{padding:6px 10px;border-radius:7px;text-align:left;display:flex;gap:7px;align-items:center;}
+.qm-choice-btn:hover:not(:disabled){border-color:var(--accent);color:var(--accent);background:var(--surface2);}
+.qm-choice-btn.selected{border-color:var(--accent);background:rgba(46,125,50,.12);color:var(--accent);font-weight:800;}
+.qm-choice-btn.correct-ans{border-color:#22c55e;background:rgba(34,197,94,.2);color:#22c55e;font-weight:700;}
+.qm-choice-btn.wrong-ans{border-color:#ef4444;background:rgba(239,68,68,.2);color:#ef4444;font-weight:700;}
+.qm-choice-btn:disabled{cursor:default;}
+.qm-correct-hint{color:var(--green);font-size:.74rem;align-self:center;margin-left:3px;}
+.qm-submit-wrap{margin-top:18px;}
+#qm-submit-btn{width:100%;padding:11px;border-radius:50px;border:none;font-weight:800;font-size:.9rem;cursor:pointer;transition:all .3s;font-family:'Plus Jakarta Sans',sans-serif;}
+#qm-submit-btn.ready{background:linear-gradient(135deg,var(--accent2),var(--green));color:#fff;box-shadow:0 4px 16px rgba(46,125,50,.3);}
+#qm-submit-btn.not-ready{background:var(--surface3);color:var(--text3);cursor:not-allowed;}
+#qm-summary{margin:14px auto 0;display:none;gap:6px;flex-wrap:wrap;justify-content:center;}
+#qm-summary.show{display:flex;}
+.qm-sum-card{background:var(--surface2);border-radius:8px;padding:6px 13px;text-align:center;border:1px solid var(--border);}
+.qm-sum-label{font-size:.68rem;color:var(--text3);}
+.qm-sum-score{font-weight:800;font-size:.95rem;}
+.qm-sum-good{color:#22c55e;}.qm-sum-ok{color:#f59e0b;}.qm-sum-bad{color:#ef4444;}
+
+#toast{position:fixed;bottom:18px;right:18px;background:var(--accent);color:#fff;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;opacity:0;transition:opacity .3s;z-index:9999;pointer-events:none;}
+#toast.show{opacity:1;}
+
+/* RESPONSIVE */
+@media(max-width:1100px){
+  .main-grid{grid-template-columns:1fr;}
+}
+@media(max-width:900px){
+  .stats-header{grid-template-columns:repeat(2,1fr);}
+  .item-grid{grid-template-columns:repeat(2,1fr);}
+  .ml-dual{grid-template-columns:1fr;}
+}
+@media(max-width:768px){
+  .ht p{display:none;}
+  .chip-label{display:none;}
+}
+@media(max-width:640px){
+  header{padding:9px 12px;gap:7px;row-gap:6px;}
+  .logo{width:34px;height:34px;font-size:12px;}
+  .ht h1{font-size:14px;}
+  .chip-edit{min-width:55px;max-width:100px;padding:3px 8px;font-size:10px;}
+  .chip{font-size:10px;padding:3px 9px;}
+  .main-grid{padding:10px 10px;gap:10px;}
+  .stats-header{gap:7px;}
+  .item-grid{grid-template-columns:1fr 1fr;}
+  .modal-box{max-width:100%;border-radius:10px;}
+  .modal-body{padding:11px 12px;}
+  .iq-action-group{flex-direction:column;align-items:stretch;}
+  .iq-action-group .take-quiz-btn,.iq-action-group .review-btn,.iq-action-group .quiz-records-btn{width:100%;justify-content:center;}
+}
+@media(max-width:400px){
+  .hm .chip{display:none;}
+  .stats-header{grid-template-columns:repeat(2,1fr);}
+  .item-grid{grid-template-columns:1fr;}
+  .stat-value-top{font-size:22px;}
+  .add-student-form input[type=text]{min-width:100px;}
+  .ht h1{font-size:13px;}
+}
+
+
+/* IQ ACTION GROUP */
+.iq-action-group{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+.iq-action-group .quiz-records-btn{margin-bottom:0;}
+
+/* QUIZ RECORDS BUTTON */
+.quiz-records-btn{background:var(--surface2);color:var(--accent);border:2px solid var(--accent);border-radius:12px;padding:8px 18px;font-size:12px;font-weight:800;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:6px;margin-bottom:10px;}
+.quiz-records-btn:hover{background:var(--surface3);}
+
+/* QUIZ RECORDS GRID (excel-style) */
+.qr-grid-wrap{overflow-x:auto;border-radius:10px;border:1px solid var(--border);}
+.qr-table{width:100%;border-collapse:collapse;font-size:11px;}
+.qr-table th{background:var(--surface3);padding:7px 9px;text-align:center;font-size:10px;font-weight:700;text-transform:uppercase;color:var(--text2);border-bottom:1px solid var(--border);border-right:1px solid var(--border);white-space:nowrap;}
+.qr-table th.name-col{text-align:left;min-width:140px;}
+.qr-table td{padding:5px 9px;border-bottom:1px solid var(--border);border-right:1px solid var(--border);text-align:center;font-family:'JetBrains Mono',monospace;font-size:11px;vertical-align:middle;}
+.qr-table td.name-col{text-align:left;font-family:'Plus Jakarta Sans',sans-serif;font-size:11px;font-weight:600;}
+.qr-table td.prog-col{min-width:70px;}
+.qr-table tr:last-child td{border-bottom:none;}
+.qr-table tr:hover td{background:rgba(46,125,50,.03);}
+.qr-gender-hdr td{background:var(--surface3);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;color:var(--accent);padding:5px 9px;border-bottom:1px solid var(--border);}
+
+/* Score color cells */
+.sc-M{background:rgba(27,94,32,.12);color:#1b5e20;font-weight:700;}
+.sc-C{background:rgba(46,125,50,.1);color:#2e7d32;font-weight:700;}
+.sc-W{background:rgba(56,142,60,.12);color:#388e3c;}
+.sc-A{background:rgba(249,168,37,.12);color:#c68000;}
+.sc-L{background:rgba(230,81,0,.1);color:#e65100;}
+.sc-N{background:rgba(198,40,40,.1);color:#c62828;}
+.sc-X{color:var(--text3);}
+
+
+/* Module name input in review */
+.module-name-input{flex-grow:1;min-width:0;}
+
+/* REVIEW MODULE - numbered list */
+.module-list{display:flex;flex-direction:column;gap:7px;margin-bottom:14px;}
+.module-item{display:flex;align-items:center;gap:10px;background:var(--surface2);border:1.5px solid var(--border);border-radius:9px;padding:9px 13px;transition:border-color .2s;}
+.module-item:hover{border-color:var(--accent);}
+.module-num{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text3);min-width:24px;font-weight:700;}
+.module-name{flex-grow:1;font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.module-size{font-size:10px;color:var(--text3);flex-shrink:0;}
+.module-view-btn{background:var(--surface3);border:1px solid var(--border);color:var(--accent);font-size:10px;font-weight:700;border-radius:6px;padding:4px 9px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;flex-shrink:0;}
+.module-view-btn:hover{background:var(--accent);color:#fff;}
+.module-del-btn{background:none;border:none;color:var(--text3);cursor:pointer;font-size:15px;padding:2px 5px;border-radius:4px;transition:color .2s;line-height:1;flex-shrink:0;}
+.module-del-btn:hover{color:var(--red);background:rgba(198,40,40,.08);}
+.module-add-zone{border:2px dashed var(--border);border-radius:9px;padding:14px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;background:var(--surface2);font-size:12px;color:var(--text2);}
+.module-add-zone:hover{border-color:var(--accent);background:var(--surface3);}
+
+/* Responsive header */
+@media(max-width:520px){
+  .hm .chip-label{display:none;}
+  .hm{gap:4px;}
+}
+
+
+/* ══ INTRO SCREEN ══ */
+#intro-screen{
+  position:fixed;inset:0;z-index:9999;
+  background:var(--accent);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:16px;
+  transition:opacity .8s ease, visibility .8s ease;
+}
+#intro-screen.fade-out{opacity:0;visibility:hidden;}
+
+.intro-logo{
+  background:rgba(255,255,255,.2);
+  border-radius:20px;
+  width:72px;height:72px;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:24px;color:#fff;
+  animation:intro-pop .6s cubic-bezier(.34,1.56,.64,1) both;
+}
+.intro-title{
+  font-size:13px;font-weight:700;
+  color:rgba(255,255,255,.8);
+  letter-spacing:.15em;text-transform:uppercase;
+  animation:intro-fade-up .6s .15s ease both;
+}
+.intro-welcome{
+  font-size:52px;font-weight:800;color:#fff;
+  line-height:1;letter-spacing:-.02em;
+  animation:intro-fade-up .6s .3s ease both;
+}
+.intro-sub{
+  font-size:13px;color:rgba(255,255,255,.65);
+  animation:intro-fade-up .5s .45s ease both;
+}
+.intro-bar-wrap{
+  width:180px;height:3px;background:rgba(255,255,255,.2);
+  border-radius:99px;overflow:hidden;
+  margin-top:12px;
+  animation:intro-fade-up .4s .55s ease both;
+}
+.intro-bar-fill{
+  height:100%;background:#fff;border-radius:99px;
+  width:0%;animation:intro-progress 4s .7s linear forwards;
+}
+
+@keyframes intro-pop{
+  0%{transform:scale(.5);opacity:0}
+  100%{transform:scale(1);opacity:1}
+}
+@keyframes intro-fade-up{
+  0%{transform:translateY(18px);opacity:0}
+  100%{transform:translateY(0);opacity:1}
+}
+@keyframes intro-progress{
+  0%{width:0%}100%{width:100%}
+}
+
+</style>
+</head>
+<body>
+
+<div id="intro-screen">
+  <div class="intro-logo">SS</div>
+  <div class="intro-title">SMART:SKED</div>
+  <div class="intro-welcome">Welcome</div>
+  <div class="intro-sub">Preparing your dashboard…</div>
+  <div class="intro-bar-wrap"><div class="intro-bar-fill"></div></div>
+</div>
+
+<div id="toast"></div>
+
+<header>
+  <div class="logo">SS</div>
+  <div class="ht">
+    <h1>SMART:SKED</h1>
+    <p>Alignment of Budget of Work to the Calendar of Activities Per Competencies</p>
+  </div>
+  <div class="hm">
+    <span class="chip-label">Class:</span>
+    <input class="chip-edit" id="hdrClass" value="12 GAS ZAIDE" title="Click to edit">
+    <span class="chip-label" style="margin-left:3px">S.Y.</span>
+    <input class="chip-edit" id="hdrSY" value="2026–2027" title="Click to edit">
+    <div class="chip">Students: <span id="hdrCount">35</span></div>
+  </div>
+</header>
+
+<div class="main-grid">
+  <div class="content-left">
+
+    <!-- Stat Cards -->
+    <div class="stats-header">
+      <div class="stat-card-top">
+        <div class="stat-title-top">Students</div>
+        <div class="stat-value-top cA">35</div>
+        <div class="stat-desc-top">enrolled</div>
+      </div>
+      <div class="stat-card-top">
+        <div class="stat-title-top">Quizzes</div>
+        <div class="stat-value-top cY" id="quizCountStat">6</div>
+        <div class="stat-desc-top">recorded</div>
+      </div>
+      <div class="stat-card-top">
+        <div class="stat-title-top">Remedial</div>
+        <div class="stat-value-top cR" id="leftRemCount">—</div>
+        <div class="stat-desc-top">low / no mastery</div>
+      </div>
+      <div class="stat-card-top">
+        <div class="stat-title-top">Mastered</div>
+        <div class="stat-value-top cG" id="leftMasCount">—</div>
+        <div class="stat-desc-top">full mastery</div>
+      </div>
+    </div>
+
+    <!-- Interactive Quizzes -->
+    <div class="content-card">
+      <div class="card-header">
+        <div class="card-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--accent)"><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg></div>
+        <div class="card-title">Interactive Quizzes</div>
+      </div>
+      <div class="iq-action-group">
+        <button class="quiz-records-btn" onclick="openModal('qr')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+          Quiz Records
+        </button>
+        <button class="take-quiz-btn" onclick="openQuizModal()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 12l2 2 4-4M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          Take Quiz
+        </button>
+        <button class="review-btn" onclick="openModal('review')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 19.5A2.5 2.5 0 016.5 17H20M4 19.5V4.5A2.5 2.5 0 016.5 2H20v15"/></svg>
+          Review Module
+        </button>
+      </div>
+    </div>
+
+    <!-- Term Archives -->    <!-- Term Archives -->
+    <div class="content-card">
+      <div class="card-header">
+        <div class="card-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--accent2)"><path d="M4 19.5v-15A2.5 2.5 0 016.5 2H20v20H6.5a2.5 2.5 0 01-2.5-2.5z"/></svg></div>
+        <div class="card-title">Term Archives</div>
+      </div>
+      <div class="item-grid">
+        <div class="item-card" onclick="openTermModal(1)">
+          <div class="item-icon term-icon">T1</div>
+          <div class="item-details"><div class="item-name">Term 1</div><div class="item-meta">June 1 – Sept 18</div></div>
+          <div class="item-arrow">›</div>
+        </div>
+        <div class="item-card" onclick="openTermModal(2)">
+          <div class="item-icon term-icon">T2</div>
+          <div class="item-details"><div class="item-name">Term 2</div><div class="item-meta">Sept 16 – Dec 18</div></div>
+          <div class="item-arrow">›</div>
+        </div>
+        <div class="item-card" onclick="openTermModal(3)">
+          <div class="item-icon term-icon">T3</div>
+          <div class="item-details"><div class="item-name">Term 3</div><div class="item-meta">Jan 5 – April 8</div></div>
+          <div class="item-arrow">›</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Management -->
+    <div class="content-card">
+      <div class="card-header">
+        <div class="card-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--text3)"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z"/></svg></div>
+        <div class="card-title">Management</div>
+      </div>
+      <div class="item-grid">
+        <div class="item-card" onclick="openModal('ml')">
+          <div class="item-icon" style="background:rgba(46,125,50,.1);color:var(--accent)">ML</div>
+          <div class="item-details"><div class="item-name">Student Masterlist</div><div class="item-meta">Edit names & gender</div></div>
+          <div class="item-arrow">›</div>
+        </div>
+        <div class="item-card" onclick="openModal('rm')">
+          <div class="item-icon" style="background:rgba(198,40,40,.1);color:var(--red)">RM</div>
+          <div class="item-details"><div class="item-name">Remedial Summary</div><div class="item-meta">Low mastery report</div></div>
+          <div class="item-arrow">›</div>
+        </div>
+        <div class="item-card" onclick="openModal('mr')">
+          <div class="item-icon" style="background:rgba(27,94,32,.12);color:var(--green)">MR</div>
+          <div class="item-details"><div class="item-name">Mastery Reference</div><div class="item-meta">Levels & interventions</div></div>
+          <div class="item-arrow">›</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content-left -->
+</div><!-- /main-grid -->
+
+<!-- UNIVERSAL MODAL -->
+<div class="modal-overlay" id="mainModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div id="mainModalTitle" class="modal-title"></div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="mainModalBody"></div>
+    <div class="modal-footer" id="mainModalFooter"></div>
+  </div>
+</div>
+
+<!-- QUIZ MODAL (dark) -->
+<div class="quiz-modal-overlay" id="quizModalOverlay">
+  <div class="quiz-modal-inner">
+    <button class="quiz-modal-close" onclick="closeQuizModal()">✕</button>
+    <div class="qm-tabs" id="qmTabs"></div>
+    <div class="qm-score-banner" id="qm-score-banner">
+      <div><div class="qm-score-num" id="qm-score-num"></div><div class="qm-score-sub" id="qm-score-sub"></div></div>
+      <button class="qm-reset-btn" onclick="qmResetQuiz()">🔄 Ulit</button>
+    </div>
+    <div class="qm-card" id="qm-card"></div>
+    <div id="qm-summary"></div>
+  </div>
+</div>
+
+<script>
+// ══ DATA ══
+let students=['Aurestila,Rodrigo Jr.','Colina,Elijah Jared Denzel T.','Diamsay,Juhn Ed N.','Eboña,Daniel Andrew II C.','Fajarito,Mike Razel C.','Fonte,Kenneth H.','Guiamad,Alraiz A.','Lim,Tristhan Kane D.','Mondejar,Jan Henry S.','Pagkalinawan,Yeshua R.','Abacial,Laica P.','Abenoja,Jona Mae N.','Apolinario,Janna Patricia R.','Castillo,Cherry Anne','Fortunado,Pinky M.','Gadian,Princess Jana B.','Jesalva,Cristine Joyce G.','Laguilayan,Halima G.','Lanuza,Gabrielle Cassandra P.','Longcob,Annalea','Manlapaz,Janna','Mislang,Carla Erica R.','Olarte,Antonette G.','Orbe,Rochelle B.','Palattao,Kristelle G.','Pedregosa,Diana D.','Pestola,Jea G.','Quiminales,Maricris B.','Relatos,Reca Mae C.','Reyes,Jamaica Ramielle','Rilloraza,Kristel Anne D.','Rivera,Beatrice Anne M.','Rosario,Adreahnne R.','Rubis,Melojane O.','Venus,Jemmarie'];
+let studentGender=students.map((_,i)=>i<=9?'M':'F');
+let Q={'Quiz 1':[5,1,20,13,10,3,1,13,13,3,20,19,1,17,16,15,13,13,10,20,19,18,17,16,15,13,13,20,20,20,20,20,20,20,1],'Quiz 2':[5,1,17,13,10,3,13,13,13,3,20,19,1,17,16,15,13,13,10,20,19,18,17,16,15,13,13,20,20,20,20,20,20,20,1],'Quiz 3':[20,1,17,13,10,20,13,13,13,3,20,19,1,17,16,15,13,13,10,20,19,18,17,16,15,13,13,20,20,20,20,20,20,20,1],'Quiz 4':[20,1,17,13,10,3,13,13,13,3,20,19,1,17,16,15,13,13,10,20,19,18,17,16,15,13,13,20,20,20,20,20,20,20,1],'Quiz 5':[20,18,17,13,10,3,13,13,13,3,20,19,1,17,16,15,13,13,10,20,19,18,17,16,15,13,13,20,20,20,20,20,20,20,1],'Quiz 6':[20,18,17,13,10,3,13,13,13,3,20,19,1,17,16,15,13,13,10,20,19,18,17,16,15,13,13,20,20,20,1,20,1,20,1]};
+let TD={1:[{melc:"FILPB-IIIa-98",topic:"Oryentasyon",week:"1",dates:"June 1–5",days:"5",resources:"School Rules",assessment:"Pre-test"},{melc:"Introduksyon",topic:"Kahulugan ng Pagbasa",week:"2",dates:"June 8–12",days:"4",resources:"Textbook",assessment:"Quiz/PT"},{melc:"MELC 1",topic:"Tekstong Impormatibo",week:"3",dates:"June 15–26",days:"8",resources:"SLM",assessment:"Quiz/PT"},{melc:"MELC 2",topic:"Tekstong Deskriptibo",week:"4",dates:"June 29–Aug 10",days:"8",resources:"Portal",assessment:"Quiz/PT"}],2:[{melc:"Enter MELC",topic:"Enter Topic",week:"1",dates:"Sep 16–20",days:"4",resources:"SLM",assessment:"PT"},{melc:"Enter MELC",topic:"Enter Topic",week:"2",dates:"Sep 23–27",days:"4",resources:"Portal",assessment:"Quiz"}],3:[{melc:"Enter MELC",topic:"Enter Topic",week:"1",dates:"Jan 5–9",days:"4",resources:"Textbook",assessment:"Quiz/PT"},{melc:"Enter MELC",topic:"Enter Topic",week:"2",dates:"Jan 12–16",days:"4",resources:"SLM",assessment:"Quiz/PT"}]};
+let termDates={1:"June 1 – Sept 18",2:"Sept 16 – Dec 18",3:"Jan 5 – April 8"};
+let AQ='Quiz 1';
+let reviewPDFs=[];
+let activePDFIdx=-1;
+let currentModal=null;
+
+// ══ UTILS ══
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function gM(v){const n=parseInt(v);if(v===''||v===null||v===undefined||isNaN(n))return{l:'No Score',c:'bX'};if(n===20)return{l:'Mastered',c:'bM'};if(n>=18)return{l:'Closely Approx.',c:'bC'};if(n>=15)return{l:'Moving Towards',c:'bW'};if(n>=12)return{l:'Average',c:'bA'};if(n>=6)return{l:'Low Mastery',c:'bL'};return{l:'Absolutely No',c:'bN'};}
+function gMFromAvg(a){if(isNaN(a)||a===null)return{l:'No Score',c:'bX'};if(a>=20)return{l:'Mastered',c:'bM'};if(a>=18)return{l:'Closely Approx.',c:'bC'};if(a>=15)return{l:'Moving Towards',c:'bW'};if(a>=12)return{l:'Average',c:'bA'};if(a>=6)return{l:'Low Mastery',c:'bL'};return{l:'Absolutely No',c:'bN'};}
+function pBar(sc){const n=parseInt(sc);if(isNaN(n))return '';const p=Math.min(100,Math.round(n/20*100));let c='var(--red)';if(p>=90)c='var(--green)';else if(p>=75)c='var(--accent)';else if(p>=55)c='var(--yellow)';else if(p>=30)c='var(--orange)';return '<div class="pw"><div class="pf" style="width:'+p+'%;background:'+c+'"></div></div>';}
+function toast(m){const t=document.getElementById('toast');t.textContent='✓ '+m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
+function syncC(){const n=students.length;document.querySelectorAll('.stat-value-top.cA')[0].textContent=n;document.getElementById('hdrCount').textContent=n;}
+document.getElementById('hdrSY').addEventListener('input',function(){});
+
+// ══ MODAL ══
+function openModal(type){
+  currentModal=type;
+  const title=document.getElementById('mainModalTitle');
+  const body=document.getElementById('mainModalBody');
+  const footer=document.getElementById('mainModalFooter');
+  footer.innerHTML='';
+  if(type==='qr'){title.textContent='📊 Quiz Records';body.innerHTML='<div id="qrTableContainer"></div>';document.getElementById('mainModal').classList.add('open');qrRefreshModal();return;}
+  else if(type==='rm'){title.textContent='🚨 Remedial Summary';body.innerHTML=buildRMBody();footer.innerHTML='<span style="font-size:11px;color:var(--text2)">Auto-populated from quiz scores</span>';}
+  else if(type==='ml'){title.textContent='👥 Student Masterlist';body.innerHTML=buildMLBody();footer.innerHTML=`<button class="btn bSave" onclick="toast('Masterlist saved!')">💾 Save</button>`;}
+  else if(type==='mr'){title.textContent='📋 Mastery Reference';body.innerHTML=buildMRBody();}
+  else if(type==='review'){title.textContent='📚 Review Module';body.innerHTML=buildReviewBody();footer.innerHTML=`<button class="btn bAdd" onclick="document.getElementById('reviewFileInput').click()">📎 Upload Module</button><input type="file" id="reviewFileInput" accept="application/pdf" multiple style="display:none" onchange="handlePDFUpload(this)"><button class="btn bSave" style="margin-left:4px" onclick="saveModulesToStorage()">💾 Save</button><button class="btn bDel" style="margin-left:4px" onclick="clearAllModules()">🗑 Clear All</button><span style="font-size:11px;color:var(--text2);margin-left:6px">Saved to browser storage • Rename by clicking names</span>`;}
+  document.getElementById('mainModal').classList.add('open');
+}
+function openTermModal(t){
+  currentModal='term'+t;
+  document.getElementById('mainModalTitle').textContent='📅 Term '+t+' Archive';
+  document.getElementById('mainModalBody').innerHTML=buildTermBody(t);
+  document.getElementById('mainModalFooter').innerHTML=`<button class="btn bAdd" onclick="addRow(${t})">+ Add Row</button><button class="btn bSave" onclick="toast('Term ${t} saved!')">💾 Save</button>`;
+  document.getElementById('mainModal').classList.add('open');
+}
+function closeModal(){document.getElementById('mainModal').classList.remove('open');currentModal=null;}
+document.getElementById('mainModal').addEventListener('click',function(e){if(e.target===this)closeModal();});
+
+// ══ GLOBAL STATS ══
+function renderGlobalStats(){
+  const qN=Object.keys(Q);let remC=0,masC=0,masTot=0,masVal=0;
+  students.forEach((s,i)=>{
+    let vl=[],mn=99,he=false;
+    qN.forEach(q=>{const sc=Q[q][i];const n=parseInt(sc);if(!isNaN(n)){vl.push(n);masVal+=n;masTot++;if(n===20)masC++;if(n<mn)mn=n;}else he=true;});
+    if((vl.length&&mn<=5)||he)remC++;
+  });
+  const el_rem=document.getElementById('leftRemCount');
+  const el_mas=document.getElementById('leftMasCount');
+  if(el_rem)el_rem.textContent=remC;
+  if(el_mas)el_mas.textContent=masC;
+}
+function renderMasteryDistribution(){
+  // sidebar removed — no-op
+}
+
+// ══ QUIZ TAB + SCORES (inline) ══
+function renderQT(){
+  const qNames=Object.keys(Q);
+  const tabBar=document.getElementById('quizTabBar');
+  const qBody=document.getElementById('quizBody');
+  const qStat=document.getElementById('quizCountStat');
+  if(tabBar)tabBar.innerHTML=qNames.map((q,i)=>`<div class="quiz-tab-wrap"><button class="quiz-tab ${q===AQ?'active':''}" onclick="switchQuiz('${q}')">${q}</button><button class="quiz-tab-del" onclick="deleteQuizByName('${q}')" title="Delete ${q}">✕</button></div>`).join('');
+  if(qBody)qBody.innerHTML=students.map((s,i)=>{
+    const sc=Q[AQ][i]!==undefined?Q[AQ][i]:'';const m=gM(sc);
+    return `<tr><td class="nm">${i+1}</td><td><input class="ed" style="min-width:130px" value="${esc(s)}" oninput="syncNameInline(${i},this.value)"></td><td><input class="si" type="number" min="0" max="20" value="${sc!==''?sc:''}" placeholder="—" oninput="liveS(${i},this.value)"></td><td id="qp${i}">${pBar(sc)}</td><td id="qm${i}"><span class="badge ${m.c}">${m.l}</span></td><td><button class="btn bDel" style="padding:3px 7px;font-size:10px" onclick="delStudent(${i})">✕</button></td></tr>`;
+  }).join('');
+  if(qStat)qStat.textContent=qNames.length;
+}
+function switchQuiz(name){AQ=name;renderQT();renderGlobalStats();}
+function addQuiz(){const name='Quiz '+(Object.keys(Q).length+1);Q[name]=new Array(students.length).fill('');renderQT();renderGlobalStats();toast(name+' added!');}
+function deleteQuizByName(name){const keys=Object.keys(Q);if(keys.length<=1){toast('Cannot delete last quiz!');return;}if(!confirm('Delete "'+name+'" and all its scores?'))return;delete Q[name];if(AQ===name)AQ=Object.keys(Q)[0];renderQT();renderGlobalStats();toast(name+' deleted!');}
+function liveS(i,v){let n=v===''?'':Math.min(20,Math.max(0,parseInt(v)||0));Q[AQ][i]=n;const m=gM(n);const mc=document.getElementById('qm'+i);const pc=document.getElementById('qp'+i);if(mc)mc.innerHTML='<span class="badge '+m.c+'">'+m.l+'</span>';if(pc)pc.innerHTML=pBar(n);renderGlobalStats();}
+function syncNameInline(i,v){students[i]=v;syncC();}
+function delStudent(i){if(!confirm('Remove "'+students[i]+'" from all quizzes?'))return;students.splice(i,1);studentGender.splice(i,1);Object.keys(Q).forEach(q=>Q[q].splice(i,1));loadModulesFromStorage();
+syncC();renderQT();renderGlobalStats();}
+function addStudentToQuiz(){students.push('New Student');studentGender.push('F');Object.keys(Q).forEach(q=>{while(Q[q].length<students.length)Q[q].push('');});loadModulesFromStorage();
+syncC();renderQT();renderGlobalStats();}
+
+// ══ TERM ══
+function buildTermBody(t){
+  let html=`<div class="br"><input class="de" value="${esc(termDates[t])}" oninput="termDates[${t}]=this.value" style="max-width:180px"></div>`;
+  html+=`<div class="tw"><table><thead><tr><th style="width:24px">#</th><th>MELC</th><th>Topic</th><th style="width:40px">Wk</th><th>Dates</th><th style="width:40px">Days</th><th>Resources</th><th>Assessment</th><th style="width:30px"></th></tr></thead><tbody>`;
+  html+=TD[t].map((r,i)=>`<tr><td><div class="tn">${i+1}</div></td><td><textarea class="ed" style="min-width:100px;resize:vertical" oninput="TD[${t}][${i}].melc=this.value">${esc(r.melc)}</textarea></td><td><textarea class="ed" style="min-width:90px;resize:vertical" oninput="TD[${t}][${i}].topic=this.value">${esc(r.topic)}</textarea></td><td><input class="ed" style="width:34px" oninput="TD[${t}][${i}].week=this.value" value="${esc(r.week)}"></td><td><input class="ed" style="width:90px" oninput="TD[${t}][${i}].dates=this.value" value="${esc(r.dates)}"></td><td><input class="ed" style="width:34px" oninput="TD[${t}][${i}].days=this.value" value="${esc(r.days)}"></td><td><textarea class="ed" style="min-width:80px;resize:vertical" oninput="TD[${t}][${i}].resources=this.value">${esc(r.resources)}</textarea></td><td><input class="ed" style="min-width:80px" oninput="TD[${t}][${i}].assessment=this.value" value="${esc(r.assessment)}"></td><td><button class="btn bDel" style="padding:3px 6px;font-size:9px" onclick="delRow(${t},${i})">✕</button></td></tr>`).join('');
+  html+=`</tbody></table></div>`;
+  return html;
+}
+function addRow(t){TD[t].push({melc:'New MELC',topic:'New Topic',week:TD[t].length+1,dates:'',days:'4',resources:'SLM',assessment:'Quiz'});document.getElementById('mainModalBody').innerHTML=buildTermBody(t);}
+function delRow(t,i){if(TD[t].length<=1){toast('Cannot delete last row');return;}TD[t].splice(i,1);document.getElementById('mainModalBody').innerHTML=buildTermBody(t);}
+
+// ══ MASTERLIST ══
+function buildMLBody(){
+  const males=[],females=[];
+  students.forEach((s,i)=>{if(studentGender[i]==='M')males.push({s,i});else females.push({s,i});});
+  // Sort alphabetically within each group
+  males.sort((a,b)=>a.s.localeCompare(b.s));
+  females.sort((a,b)=>a.s.localeCompare(b.s));
+
+  let mHTML='',fHTML='';
+  males.forEach((item,pos)=>{mHTML+=`<div class="ml-row"><div class="ml-num">${pos+1}</div><div class="ml-name"><input value="${esc(item.s)}" oninput="mUpd(${item.i},this.value)"></div><button class="ml-del" onclick="mDel(${item.i})" title="Remove">×</button></div>`;});
+  females.forEach((item,pos)=>{fHTML+=`<div class="ml-row"><div class="ml-num">${pos+1}</div><div class="ml-name"><input value="${esc(item.s)}" oninput="mUpd(${item.i},this.value)"></div><button class="ml-del" onclick="mDel(${item.i})" title="Remove">×</button></div>`;});
+
+  return `
+  <div class="add-student-form">
+    <div>
+      <label>Student Name</label>
+      <input type="text" id="newStudentName" placeholder="Last, First M.">
+    </div>
+    <div>
+      <label>Gender</label>
+      <div class="gender-select">
+        <label class="gender-opt"><input type="radio" name="newGender" value="M" checked> Male</label>
+        <label class="gender-opt"><input type="radio" name="newGender" value="F"> Female</label>
+      </div>
+    </div>
+    <button class="btn bAdd" onclick="addStudentFromForm()">+ Add Student</button>
+  </div>
+  <div class="ml-dual">
+    <div>
+      <div class="ml-col-header">👦 Male Students <span style="margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3)">${males.length}</span></div>
+      <div class="ml-col-body" id="mlMaleCol">${mHTML||'<div style="padding:14px;text-align:center;color:var(--text3);font-size:12px">No male students</div>'}</div>
+    </div>
+    <div>
+      <div class="ml-col-header">👧 Female Students <span style="margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3)">${females.length}</span></div>
+      <div class="ml-col-body" id="mlFemaleCol">${fHTML||'<div style="padding:14px;text-align:center;color:var(--text3);font-size:12px">No female students</div>'}</div>
+    </div>
+  </div>`;
+}
+function addStudentFromForm(){
+  const nameEl=document.getElementById('newStudentName');
+  const name=nameEl.value.trim();
+  if(!name){toast('Please enter a name');return;}
+  const gender=document.querySelector('input[name="newGender"]:checked').value;
+  students.push(name);
+  studentGender.push(gender);
+  Object.keys(Q).forEach(q=>{while(Q[q].length<students.length)Q[q].push('');});
+  loadModulesFromStorage();
+syncC();renderQT();renderGlobalStats();
+  nameEl.value='';
+  if(currentModal==='ml')document.getElementById('mainModalBody').innerHTML=buildMLBody();
+  toast(name+' added!');
+}
+function mUpd(i,v){students[i]=v;syncC();renderQT();}
+function mDel(i){if(!confirm('Remove "'+students[i]+'"?'))return;students.splice(i,1);studentGender.splice(i,1);Object.keys(Q).forEach(q=>Q[q].splice(i,1));loadModulesFromStorage();
+syncC();renderQT();renderGlobalStats();if(currentModal==='ml')document.getElementById('mainModalBody').innerHTML=buildMLBody();}
+
+// ══ REMEDIAL ══
+function buildRMBody(){
+  const qN=Object.keys(Q);
+  let html=`<div class="tw"><table><thead><tr><th>#</th><th>Name</th>${qN.map(q=>'<th>'+q.replace('Quiz','Q')+'</th>').join('')}<th>Total</th><th>Avg</th><th>Rem?</th><th>Mastery</th></tr></thead><tbody>`;
+  html+=students.map((s,i)=>{
+    const qs=qN.map(q=>Q[q][i]);const ns=qs.map(v=>parseInt(v));const tot=ns.reduce((a,b)=>a+(isNaN(b)?0:b),0);const vl=ns.filter(n=>!isNaN(n));const avg=vl.length?(tot/vl.length):null;const avgD=avg!==null?avg.toFixed(1):'—';const he=qs.some(v=>v===''||v===null||v===undefined||isNaN(parseInt(v)));const m=avg!==null?gMFromAvg(avg):{l:'No Score',c:'bX'};const nd=he||(avg!==null&&avg<6);
+    return `<tr><td class="nm">${i+1}</td><td style="font-size:12px">${s}</td>${qs.map(sc=>{const n=parseInt(sc);let c='var(--text)';if(isNaN(n))c='var(--text3)';else if(n<=5)c='var(--red)';else if(n>=18)c='var(--green)';else if(n>=15)c='var(--accent)';else if(n>=12)c='var(--yellow)';else c='var(--orange)';return '<td class="nm" style="color:'+c+';font-weight:600">'+(isNaN(n)?'—':n)+'</td>';}).join('')}<td class="nm" style="font-weight:800">${tot}</td><td class="nm">${avgD}</td><td><span class="badge ${nd?'bY':'bP'}">${nd?'YES':'NO'}</span></td><td><span class="badge ${m.c}">${m.l}</span></td></tr>`;
+  }).join('');
+  return html+`</tbody></table></div>`;
+}
+
+// ══ MASTERY REF ══
+function buildMRBody(){
+  return `<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+  <div style="border:1px solid var(--border);border-radius:var(--r);overflow:hidden">
+    <div style="background:var(--surface3);padding:9px 12px;font-weight:700;font-size:12px;color:var(--accent);border-bottom:1px solid var(--border)">📋 Per 20-item Quiz</div>
+    <table><thead><tr><th>Level</th><th>Score</th></tr></thead><tbody>
+    <tr><td><span class="badge bM">Mastered</span></td><td class="nm">20</td></tr>
+    <tr><td><span class="badge bC">Closely Approx.</span></td><td class="nm">18–19</td></tr>
+    <tr><td><span class="badge bW">Moving Towards</span></td><td class="nm">15–17</td></tr>
+    <tr><td><span class="badge bA">Average</span></td><td class="nm">12–14</td></tr>
+    <tr><td><span class="badge bL">Low Mastery</span></td><td class="nm">6–10</td></tr>
+    <tr><td><span class="badge bN">Absolutely No</span></td><td class="nm">1–5</td></tr>
+    </tbody></table></div>
+  <div style="border:1px solid var(--border);border-radius:var(--r);overflow:hidden">
+    <div style="background:var(--surface3);padding:9px 12px;font-weight:700;font-size:12px;color:var(--accent);border-bottom:1px solid var(--border)">💡 Interventions</div>
+    <div style="padding:12px;display:flex;flex-direction:column;gap:8px">
+    <div style="background:var(--surface2);border-radius:7px;padding:10px;border:1px solid var(--border);font-weight:700;font-size:12px;color:var(--accent)">Peer Tutoring</div>
+    <div style="background:var(--surface2);border-radius:7px;padding:10px;border:1px solid var(--border);font-weight:700;font-size:12px;color:var(--accent2)">SLM (Modules)</div>
+    <div style="background:var(--surface2);border-radius:7px;padding:10px;border:1px solid var(--border);font-weight:700;font-size:12px;color:var(--green)">Supplemental Study</div>
+    </div></div></div>`;
+}
+
+// ══ REVIEW MODULE (persistent via localStorage base64) ══
+// Load saved modules from localStorage on startup
+function loadModulesFromStorage(){
+  try{
+    const saved=localStorage.getItem('smartsked_modules');
+    if(saved){
+      const arr=JSON.parse(saved);
+      arr.forEach(m=>{
+        // Re-create blob URL from stored base64
+        const byteStr=atob(m.b64);
+        const ab=new ArrayBuffer(byteStr.length);
+        const ia=new Uint8Array(ab);
+        for(let i=0;i<byteStr.length;i++)ia[i]=byteStr.charCodeAt(i);
+        const blob=new Blob([ab],{type:'application/pdf'});
+        const url=URL.createObjectURL(blob);
+        reviewPDFs.push({name:m.name,url,size:m.size,b64:m.b64});
+      });
+    }
+  }catch(e){console.warn('Could not load saved modules',e);}
+}
+
+function saveModulesToStorage(){
+  try{
+    const arr=reviewPDFs.map(m=>({name:m.name,size:m.size,b64:m.b64||''}));
+    localStorage.setItem('smartsked_modules',JSON.stringify(arr));
+    toast('Modules saved!');
+  }catch(e){
+    toast('Save failed – file may be too large for browser storage');
+  }
+}
+
+function buildReviewBody(){
+  let html='';
+  if(reviewPDFs.length===0){
+    html=`<div class="module-add-zone" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="handlePDFDrop(event)" onclick="document.getElementById('reviewFileInput')&&document.getElementById('reviewFileInput').click()">
+      <div style="font-size:32px;margin-bottom:8px">📄</div>
+      <div style="font-weight:700;color:var(--accent);font-size:14px;margin-bottom:4px">Upload Review Modules</div>
+      <div style="font-size:11px">Click to browse or drag & drop PDFs here</div>
+    </div>`;
+  } else {
+    html+=`<div class="module-list" id="moduleList">`;
+    reviewPDFs.forEach((pdf,idx)=>{
+      html+=`<div class="module-item">
+        <div class="module-num">m${idx+1}</div>
+        <input class="module-name-input" value="${esc(pdf.name)}" title="Click to rename" onchange="renameModule(${idx},this.value)" style="flex-grow:1;background:transparent;border:1px solid transparent;border-radius:5px;font-size:12px;font-weight:600;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;padding:2px 6px;cursor:pointer;min-width:0;" onfocus="this.style.borderColor='var(--accent)';this.style.background='var(--surface3)'" onblur="this.style.borderColor='transparent';this.style.background='transparent'">
+        <div class="module-size">${pdf.size}</div>
+        <button class="module-view-btn" onclick="viewPDF(${idx})">View</button>
+        <button class="module-del-btn" onclick="deletePDF(${idx},event)" title="Delete">✕</button>
+      </div>`;
+    });
+    html+=`</div>`;
+    if(activePDFIdx>=0&&activePDFIdx<reviewPDFs.length){
+      html+=`<div class="pdf-viewer-wrap" id="pdfViewerWrap">
+        <div class="pdf-viewer-label">📄 m${activePDFIdx+1} — ${esc(reviewPDFs[activePDFIdx].name)}</div>
+        <iframe src="${reviewPDFs[activePDFIdx].url}"></iframe>
+      </div>`;
+    } else {
+      html+=`<div style="padding:18px;text-align:center;background:var(--surface2);border-radius:9px;border:1px solid var(--border);color:var(--text2);font-size:12px">👆 Click View on a module above to open it</div>`;
+    }
+    html+=`<div class="module-add-zone" style="margin-top:10px;padding:12px" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="handlePDFDrop(event)" onclick="document.getElementById('reviewFileInput')&&document.getElementById('reviewFileInput').click()">
+      📎 Upload another module (drag & drop or click)
+    </div>`;
+  }
+  return html;
+}
+
+function fileToBase64(file){
+  return new Promise((res,rej)=>{
+    const r=new FileReader();
+    r.onload=()=>res(r.result.split(',')[1]);
+    r.onerror=rej;
+    r.readAsDataURL(file);
+  });
+}
+
+async function handlePDFUpload(input){
+  const files=Array.from(input.files);
+  for(const file of files){
+    if(file.type!=='application/pdf'){toast('Only PDF files');continue;}
+    const b64=await fileToBase64(file);
+    const url=URL.createObjectURL(file);
+    const size=file.size>1024*1024?(file.size/1024/1024).toFixed(1)+' MB':(file.size/1024).toFixed(0)+' KB';
+    reviewPDFs.push({name:file.name,url,size,b64});
+    activePDFIdx=reviewPDFs.length-1;
+  }
+  input.value='';
+  if(currentModal==='review')document.getElementById('mainModalBody').innerHTML=buildReviewBody();
+  toast('PDF uploaded! Click 💾 Save to keep across sessions.');
+}
+
+async function handlePDFDrop(e){
+  e.preventDefault();e.currentTarget.classList.remove('drag-over');
+  const files=Array.from(e.dataTransfer.files).filter(f=>f.type==='application/pdf');
+  if(!files.length){toast('Please drop a PDF');return;}
+  for(const file of files){
+    const b64=await fileToBase64(file);
+    const url=URL.createObjectURL(file);
+    const size=file.size>1024*1024?(file.size/1024/1024).toFixed(1)+' MB':(file.size/1024).toFixed(0)+' KB';
+    reviewPDFs.push({name:file.name,url,size,b64});
+    activePDFIdx=reviewPDFs.length-1;
+  }
+  if(currentModal==='review')document.getElementById('mainModalBody').innerHTML=buildReviewBody();
+  toast('PDF uploaded! Click 💾 Save to keep across sessions.');
+}
+
+function renameModule(idx,newName){
+  if(!newName.trim())return;
+  reviewPDFs[idx].name=newName.trim();
+  toast('Renamed!');
+}
+
+function viewPDF(idx){activePDFIdx=idx;if(currentModal==='review')document.getElementById('mainModalBody').innerHTML=buildReviewBody();}
+
+function deletePDF(idx,e){
+  e.stopPropagation();
+  if(!confirm('Remove "'+reviewPDFs[idx].name+'"?'))return;
+  URL.revokeObjectURL(reviewPDFs[idx].url);
+  reviewPDFs.splice(idx,1);
+  if(activePDFIdx>=reviewPDFs.length)activePDFIdx=reviewPDFs.length-1;
+  saveModulesToStorage();
+  if(currentModal==='review')document.getElementById('mainModalBody').innerHTML=buildReviewBody();
+  toast('Module deleted');
+}
+
+// ══ QUIZ MODAL (dark) ══
+const quizData={
+  1:{title:"Quiz 1",subtitle:"Proseso, Teorya, o Kasanayan sa Pagbasa",instruction:'Isulat ang P kung ang salita ay Proseso ng pagbasa, T naman kung Teorya ng pagbasa at K naman kung ito ay Kasanayan sa pagbasa.',type:"ptk",choices:["P","T","K"],questions:[{id:1,text:"Bilis",answer:"K"},{id:2,text:"Reaksyon",answer:"P"},{id:3,text:"Persepsyon",answer:"P"},{id:4,text:"Interaktibo",answer:"T"},{id:5,text:"Integrasyon",answer:"P"},{id:6,text:"Pang-unawa",answer:"K"},{id:7,text:"Itaas – Pababa",answer:"T"},{id:8,text:"Komprehensyon",answer:"K"},{id:9,text:"Iskema (Schema)",answer:"T"},{id:10,text:"Ibaba – Pataas (Bottom – Up)",answer:"T"}]},
+  2:{title:"Quiz 2",subtitle:"Uri, Bahagi, at Istratehiya ng Pagbasa",instruction:'Isulat ang "Havey" kung wasto ang ipinapahayag ng pangungusap at "Waley" naman kung hindi.',type:"havey",choices:["Havey","Waley"],questions:[{id:1,text:"Ang surveying ng isang teksto ay ang mabilisang pagtingin sa mga larawan, pamagat, at pangalawang pamagat.",answer:"Havey"},{id:2,text:"Bago bumasa nakabubuo ng mga tanong at matalinong prediksyon kung tungkol saan ang isang teksto batay sa isinagawang pagsisiyasat.",answer:"Havey"},{id:3,text:"Habang nagbabasa hindi sabay-sabay na pinagagana ng isang mambabasa ang iba't ibang kasanayan upang lubusang maunawaan ang teksto.",answer:"Waley"},{id:4,text:"Habang nagbabasa titantiya sa bilis ng pagbasa, biswalisasyon sa binabasa, pagbuo ng koneksyon, paghihinuha, pagsubaybay sa komprehensyon, muling pagbabasa, maliban sa pagkuha ng kahulugan mula sa konteksto.",answer:"Waley"},{id:5,text:"Upang maipagpatuloy ang malalim na pang-unawa at pag-alala sa konteksto kahit natapos na ang proseso ng pagbasa, mahahalagang isagawa ng isang mambabasa ang pagtatasa ng komprehensyon, pagbubuod, pagbuo ng sintesis maliban sa ebalwasyon.",answer:"Waley"},{id:6,text:"Ang katotohanan ay mga pahayag na maaaring mapatunayan o mapasubalian sa pamamagitan ng emperikal na karanasan, pananaliksik o pangkalahatang kaalaman o impormasyon.",answer:"Havey"},{id:7,text:"Ang opinyon naman ay mga pahayag na nagpapakita ng presensiya o ideya batay sa personal na paniniwala at iniisip ng isang tao.",answer:"Havey"},{id:8,text:"Paglilinaw o (Clarifying) ay ang paghuhusga at pagsusuri ng mga element ng teksto.",answer:"Waley"},{id:9,text:"Mata lamang ang ginagamit sa pasalita na pagbabasa.",answer:"Waley"},{id:10,text:"Ang tahimik na ginagamitan ng bibig, bukod sa mga mata kaya nagkakaroon ng tunog ang pagbasa.",answer:"Waley"}]},
+  3:{title:"Quiz 3",subtitle:"Pagtatambal ng Konsepto",instruction:"Itambal ang bawat bilang sa tamang kahulugan o paglalarawan mula sa listahan.",type:"matching",choices:["A","B","C","D","E","F","G","H","I","J"],matchChoices:[{key:"A",text:"Pagpapakita ng pagkakatulad at pagkakaiba ng dalawang bagay o pangyayari"},{key:"B",text:"Paghahati ng isang malaking paksa sa iba't ibang kategorya"},{key:"C",text:"Ipinaliliwanag ang kahulugan ng isang salita, termino o konsepto"},{key:"D",text:"Pinakita ang relasyon ng dalawang bagay: kung bakit nangyari ang isang bagay (sanhi) at naging resulta"},{key:"E",text:"Tinatawag ding expositori, ay isang anyo ng pagpapahayag na naglalayong magpaliwanag at magbigay impormasyon"},{key:"F",text:"Nilalahad dito ang pangunahing ideya sa pamamagitan ng paglalagay ng pamagat"},{key:"G",text:"Ginagamit nito Organizational Markers upang makita at mabasa agad ng mambabasa ang pangunahing ideya"},{key:"H",text:"Makatulong mabuo sa isipan ng mga mambabasa ang pangunahing ideya nais niyang maitanim o maiwan sa isipan"},{key:"I",text:"Ito ay isang halimbawa ng teksto"},{key:"J",text:"Paggamit ng mga nakalarawang representasyon – paggamit ng larawan, diagrama o chart"}],questions:[{id:1,text:"Sanhi-Bunga",answer:"D"},{id:2,text:"Paghahambing",answer:"A"},{id:3,text:"Pagbibigay Depinisyon",answer:"C"},{id:4,text:"Paglilista ng Klasipikasyon",answer:"B"},{id:5,text:"Tekstong Impormatibo",answer:"E"},{id:6,text:"Layunin ng may Akda",answer:"H"},{id:7,text:"Pantulong na Kaisipan",answer:"G"},{id:8,text:"Pangunahing Ideya",answer:"F"},{id:9,text:"Encyclopedia",answer:"I"},{id:10,text:"Mga Estilo sa Pagsusulat",answer:"J"}]},
+  4:{title:"Quiz 4",subtitle:"Cohesive Devices sa Tekstong Deskriptibo",instruction:"Punan ang patlang upang mabuo ang diwa ng mga pangungusap. Piliin ang wastong sagot.",type:"fillblank",questions:[{id:1,text:"Ang Cohesive Devices sa Tekstong Deskriptibo ang ginagamit ng manunulat o naglalarawan upang magkaroon ng _______ na daloy ng kaisipan sa isang teksto.",answer:"mas maayos at mas malinaw",choices:["mas maayos at mas malinaw","karanasan at saloobin","masistemang pananaw","Kohisyong Leksikal"]},{id:2,text:"Ang Reperensiya ay ang paggamit ng mga salitang maaaring tumukoy sa _______.",answer:"paksang pinag-uusapan",choices:["paksang pinag-uusapan","pangungusap","sino o ano","panghalip"]},{id:3,text:"Anapora kung kailangang bumalik sa teksto upang malaman kung _______ ang tinutukoy.",answer:"sino o ano",choices:["sino o ano","panghalip","Parirala o sugnay","masistemang pananaw"]},{id:4,text:"Ang Katapora nauna ang _______ at malalaman lamang kapag ipinagpatuloy ang pagbabasa.",answer:"panghalip",choices:["panghalip","pangungusap","Parirala o sugnay","Substitusyon"]},{id:5,text:"Ang _______ ay ang paggamit ng ibang salita na ipapalit sa halip na maulit ang salita.",answer:"Substitusyon",choices:["Substitusyon","Kohisyong Leksikal","Parirala o sugnay","masistemang pananaw"]},{id:6,text:"Ang Ellipsis ay ang pagbabawas ng ibang parte _______ pero hindi mababawasan ang diwa.",answer:"Parirala o sugnay",choices:["Parirala o sugnay","pangungusap","Substitusyon","karanasan at saloobin"]},{id:7,text:"Ang Pang-ugnay ang paggamit ng pag-ugnay na 'at' para pag-ugnayin ang mga pangungusap _______.",answer:"pangungusap",choices:["pangungusap","Parirala o sugnay","sino o ano","masistemang pananaw"]},{id:8,text:"Ang _______ ay ang mabibisang salita na ginagamit sa teksto para magkaroon ito ng kohesion.",answer:"Kohisyong Leksikal",choices:["Kohisyong Leksikal","Substitusyon","masistemang pananaw","panghalip"]},{id:9,text:"Ang wika ay maaaring magkaiba ang paglalarawan ng isang tao, bagay, pook, o pangyayari salig na rin sa _______ ng taong naglalarawan.",answer:"karanasan at saloobin",choices:["karanasan at saloobin","masistemang pananaw","paksang pinag-uusapan","Kohisyong Leksikal"]},{id:10,text:"Dapat magkaroon ng _______ sa paglalahad ng mga bagay na makatulong upang mailalarawang ganap ang isang tao, bagay, pook o pangyayari.",answer:"masistemang pananaw",choices:["masistemang pananaw","karanasan at saloobin","Kohisyong Leksikal","Substitusyon"]}]},
+  5:{title:"Quiz 5",subtitle:"Propaganda Devices",instruction:"Tukuyin ang Propaganda Devices sa bawat bilang. Bilugan ang titik ng tamang sagot.",type:"mcq",questions:[{id:1,text:"Ang pagsisiraan ng mga kandidato sa isa't isa tuwing eleksyon ay hindi na bagong bagay. May mga kandidatong nagbibigay ng hindi magandang puna sa kalaban nila sa puwesto. Anong propaganda devices ang binabanggit?",choices:["Transfer","Plain Folks","Name Calling","Bandwagon"],answer:"Name Calling"},{id:2,text:"Makikita sa komersyal ni James Reid na kahit anong sitwasyon ay mananatili siyang gwapo kapag gumamit ng produktong Master. Anong uri ito ng propaganda devices?",choices:["Glittering Generalities","Bandwagon","Name Calling","Plain Folks"],answer:"Glittering Generalities"},{id:3,text:"Dahil kilala si Kuya Kim bilang mahilig tumuklas ng bagay-bagay lalo na sa siyensiya at sikat siya sa ganitong larangan pinipili siya upang mag-endorso ng mga gamot na hindi pa masyadong sikat sa merkado.",choices:["Bandwagon","Testimonial","Transfer","Name Calling"],answer:"Testimonial"},{id:4,text:'"Huwag mahihiyang magtanong kung may RiteMED ba nito?" makikita sa komeryal na ang nag-endorso nito ay si Susan Roces ng kasalukuyang ipinakikilala ang RiteMED sa merkado.',choices:["Transfer","Name Calling","Bandwagon","Testimonial"],answer:"Testimonial"},{id:5,text:"May mga komersyal na napapanood natin sa telebisyon na ordinaryong tao ang nag-eendorso ng produkto isang halimbawa ay ang Surf Fabcon.",choices:["Transfer","Plain Folks","Testimonial","Glittering Generalities"],answer:"Plain Folks"},{id:6,text:"LBC Hari ng padala, ipinapakita sa komeryal na ito na lahat ng tao ay sa LBC lang nagpapadala kaya't hinihikayat at pinapaniwala ang masa na ito ang tangkilikin.",choices:["Plain Folks","Transfer","Name Calling","Bandwagon"],answer:"Bandwagon"},{id:7,text:"Ang komersyal ng Lucky Me Original na ang bata ay gagawin lahat para sa Lucky Me ipinakikita ang magandang dulot nito sa pamilya, subalit hindi sinasabi ang masamang epekto ng labis na pagkain nito gaya ng pagkakaroon ng UTI.",choices:["Card Stacking","Transfer","Testimonial","Name Calling"],answer:"Card Stacking"},{id:8,text:'Habacadabra sa long hair mo, sayang sa akin maikli, pahabain natin! Makikita ang sikat na si Kathryn Bernardo sa komeryal ng sunsilk.',choices:["Transfer","Testimonial","Bandwagon","Card Stacking"],answer:"Testimonial"},{id:9,text:"Isa ang French Fries sa pinaka paborito inoorder sa mga fast food. Makikita sa komersyal na ang Crispy nito, ngunit may masamang dulot sa kalusugan ang sobrang pagkain nito.",choices:["Testimonial","Bandwagon","Card Stacking","Transfer"],answer:"Card Stacking"},{id:10,text:"Pamilyar ka ba sa CoverGirl magasin? Halos lahat ng mga sikat na artista na nagiging cover ng magasing ito ay gumagamit ng Covergirl na produkto.",choices:["Testimonial","Card Stacking","Bandwagon","Transfer"],answer:"Bandwagon"}]},
+  6:{title:"Quiz 6",subtitle:"Porma ng Creative Non Fiction",instruction:"Tukuyin ang iba't ibang porma ng Creative Non Fiction sa mga sumusunod na halimbawa. Bilugan ang titik ng tamang sagot.",type:"mcq",questions:[{id:1,text:"Ang paglalakbay ay masayang gawain kung kasama ang pamilya at mga kaibigan. Narito ang isa sa aking paglalakbay noong bakasyon na hindi ko malilimutan. Niyaya kami ng aming tiyahin na lumuwas ng Samar upang dalawin ang aming mga kamag-anak doon. Anong porma ito ng CNF?",choices:["Biography","Blog ng paglalakbay","Food writing","Personal essay"],answer:"Blog ng paglalakbay"},{id:2,text:"Ako ay simpleng tao. Gaya ng iba mayroon din akong mga pangarap. Mga pangarap na walang katapusan. Kapag mayroon akong ninanais na bagay na aking nakamit ay mayroon na naming bagong pangarap na uusbong sa aking puso at isip. Ito ay nasa pormang _____?",choices:["Blog","Travel writing","Personal essay","Biography"],answer:"Personal essay"},{id:3,text:"Masarap na katambal ng pritong isda ang chopsuey. Kung paano ito iluto ay naririto ang tamang paraan. Igisa ang bawang, sibuyas, at karne. Ilagay ang gulay, tubig, oyster sauce. Haluin. Timplahan ng asin at vetsin, hayaang maluto. Ilagay ang itlog ng pugo. Ihain.",choices:["Food writing","Personal essay","Blog","Memoir"],answer:"Food writing"},{id:4,text:"Tulad ng ibang tao sa mundo mayroon tayong eksaktong taon, araw, buwan at mga tao na higit na nakatulong sa ating personalidad sa ating buhay. Pinagkalooban ng isang natatanging pangalan mula sa pamilyang namuhay sa simpleng paraan. Anong paraan ito ng CNF?",choices:["Personal essay","Memoir","Biography","Blog"],answer:"Memoir"},{id:5,text:"Si Bienvenido Lumbera ay isang makata, tagapuna, dramatist, at iskolar ng Pilipinas na may maraming napanalunan. Ipinanganak noong Abril 11, 1932 sa Lipa, Batangas. Nagtapos sa Pamantasan ng Santo Tomas at Pamantasang Indiana. Siya ay Pambansang Alagad ng Sining. Anong porma ito ng Creative Non Fiction?",choices:["Memoir","Blog","Personal essay","Biography"],answer:"Biography"},{id:6,text:"Sa Kabila ng lahat. Ang makinig ng huni ng ibon at musika mula sa iba't ibang boses ng mga kilalang mang-aawit lamang naman ang tangi kong hiling. Ang mapakinggan ang boses ni ama, ina at ng iba ko pang kaibigan ang aking nais pero bakit tila puno ng balakid? Mula sa isang student journalist.",choices:["Biography","Feature writing","Blog","Travel writing"],answer:"Feature writing"},{id:7,text:'"Iba\'t ibang nauusong damit ng taon" Kasabay ng modernisasyon ngayon sa ating panahon, ay pagbabago din ng estilo ng kasuotan. Kung ano ang uso ay sinusunod ito ng mga tao. Karamihan ay iyong mga fashionista.',choices:["Memoir","Biography","Blog","Food writing"],answer:"Blog"},{id:8,text:'Sa pelikulang "My Amnesia Girl" na pinagbidahan nina John Loyd at Toni nagpanggap si Toni na may amnesia upang gantihan si John Loyd dahil sa di nito pagsipot sa araw ng kanilang kasal. Muli silang nagkita upang ayusi ang nasirang relasyon si John Loyd naman ang totoong nagka amnesia dahil sa isang aksidente. Anong pamamaraan ito ng narasyon?',choices:["Plot Twist","Diyalogo","Ellipsis","Foreshadowing"],answer:"Plot Twist"},{id:9,text:'"Hindi-hindi okey lang! Sayang naman ang raket na yon. Kaya na ni Peachy yun. Sige ako na yan, Hindi, okey na, ako na!"',choices:["Plot twist","Diyalogo","In Medias res","Ellipsis"],answer:"Diyalogo"},{id:10,text:"Pinasok ng Task Force Agila sa pangunguna ni Cardo ang hideout ni Bungo. Habang tinutugis ni Cardo ang pinuno ng gang ay nahuli siya at sinaksak ni Bungo si Cardo. Sumuka ito ng dugo. Anong paraan ito ng narasyon?",choices:["Foreshadowing","Plot twist","Ellipsis","Reverse Chronology"],answer:"Foreshadowing"}]}
+};
+let qmActive=1,qmAnswers={},qmSubmitted={},qmScores={};
+function openQuizModal(){document.getElementById('quizModalOverlay').classList.add('open');qmRenderTabs();qmRenderQuiz();}
+function closeQuizModal(){document.getElementById('quizModalOverlay').classList.remove('open');}
+document.getElementById('quizModalOverlay').addEventListener('click',function(e){if(e.target===this)closeQuizModal();});
+function qmRenderTabs(){const tabs=document.getElementById('qmTabs');tabs.innerHTML='';for(let n=1;n<=6;n++){const btn=document.createElement('button');btn.className='qm-tab-btn'+(n===qmActive?' active':'');btn.textContent='Q'+n;btn.onclick=()=>{qmActive=n;qmRenderTabs();qmRenderQuiz();};if(qmScores[n]!==undefined){const badge=document.createElement('span');const sc=qmScores[n];badge.className='qm-tab-badge '+(sc>=7?'qm-badge-good':sc>=5?'qm-badge-ok':'qm-badge-bad');badge.textContent=sc;btn.appendChild(badge);}tabs.appendChild(btn);}}
+function qmRenderQuiz(){qmRenderScoreBanner();const quiz=quizData[qmActive];const card=document.getElementById('qm-card');const isSubmitted=qmSubmitted[qmActive];let html=`<div class="qm-quiz-title">${quiz.title}</div><div class="qm-quiz-subtitle">${quiz.subtitle}</div><div class="qm-quiz-instruction">${quiz.instruction}</div>`;if(quiz.type==='matching'){html+=`<div class="qm-match-box"><div class="qm-match-box-title">Mga Pagpipilian:</div>`;quiz.matchChoices.forEach(c=>{html+=`<div class="qm-match-item"><span class="qm-match-key">${c.key}.</span>${c.text}</div>`;});html+=`</div>`;}html+=`<div class="qm-questions">`;quiz.questions.forEach((q,idx)=>{const userAns=(qmAnswers[qmActive]||{})[q.id];const isCorrect=isSubmitted&&userAns===q.answer;const isWrong=isSubmitted&&userAns&&userAns!==q.answer;const itemClass=isCorrect?'correct':isWrong?'wrong':'';html+=`<div class="qm-q-item ${itemClass}"><div class="qm-q-header"><div class="qm-q-num">${idx+1}</div><div class="qm-q-text">${q.text}</div></div>`;if(quiz.type==='ptk'||quiz.type==='havey'){html+=`<div class="qm-choices-row">`;quiz.choices.forEach(c=>{html+=qmCB(q,c,userAns,isSubmitted,'qm-choice-btn');});if(isSubmitted&&isWrong)html+=`<span class="qm-correct-hint">✓ ${q.answer}</span>`;html+=`</div>`;}if(quiz.type==='matching'){html+=`<div class="qm-choices-row">`;quiz.choices.forEach(c=>{html+=qmCB(q,c,userAns,isSubmitted,'qm-choice-btn circle');});if(isSubmitted&&isWrong)html+=`<span class="qm-correct-hint">✓ ${q.answer}</span>`;html+=`</div>`;}if(quiz.type==='fillblank'){html+=`<div class="qm-choices-col">`;q.choices.forEach(c=>{html+=qmCB(q,c,userAns,isSubmitted,'qm-choice-btn pill-lg');});html+=`</div>`;}if(quiz.type==='mcq'){const letters=['A','B','C','D'];html+=`<div class="qm-choices-col">`;q.choices.forEach((c,ci)=>{html+=qmCBM(q,c,ci,letters[ci],userAns,isSubmitted);});html+=`</div>`;}html+=`</div>`;});html+=`</div>`;if(!isSubmitted){const answered=Object.keys(qmAnswers[qmActive]||{}).length;const total=quiz.questions.length;const ready=answered===total;html+=`<div class="qm-submit-wrap"><button id="qm-submit-btn" class="${ready?'ready':'not-ready'}" onclick="qmSubmitQuiz()" ${ready?'':'disabled'}>${ready?'✅ I-submit ang Quiz':'Sagutin ang lahat ('+answered+'/'+total+')'}</button></div>`;}card.innerHTML=html;qmRenderSummary();}
+function qmCB(q,c,uA,iS,cls){let sc='';if(iS){if(c===q.answer)sc='correct-ans';else if(c===uA)sc='wrong-ans';}else if(c===uA)sc='selected';return `<button class="${cls} ${sc}" ${iS?'disabled':''} onclick="qmSA(${q.id},'${c.replace(/'/g,"\\'")}')">${c}</button>`;}
+function qmCBM(q,c,ci,letter,uA,iS){let sc='';if(iS){if(c===q.answer)sc='correct-ans';else if(c===uA)sc='wrong-ans';}else if(c===uA)sc='selected';return `<button class="qm-choice-btn mcq-btn ${sc}" ${iS?'disabled':''} onclick="qmSA(${q.id},'${c.replace(/'/g,"\\'")}')" ><span style="font-weight:800;opacity:.7">${letter}.</span> ${c}</button>`;}
+function qmSA(qid,value){if(qmSubmitted[qmActive])return;if(!qmAnswers[qmActive])qmAnswers[qmActive]={};qmAnswers[qmActive][qid]=value;qmRenderQuiz();}
+function qmSubmitQuiz(){const quiz=quizData[qmActive];let score=0;quiz.questions.forEach(q=>{if((qmAnswers[qmActive]||{})[q.id]===q.answer)score++;});qmScores[qmActive]=score;qmSubmitted[qmActive]=true;qmRenderTabs();qmRenderQuiz();}
+function qmResetQuiz(){delete qmAnswers[qmActive];delete qmSubmitted[qmActive];delete qmScores[qmActive];qmRenderTabs();qmRenderQuiz();}
+function qmRenderScoreBanner(){const banner=document.getElementById('qm-score-banner');const sc=qmScores[qmActive];if(sc===undefined){banner.className='qm-score-banner';return;}const total=quizData[qmActive].questions.length;const cls=sc>=7?'good':sc>=5?'ok':'bad';const emoji=sc>=7?'🎉':sc>=5?'👍':'💪';document.getElementById('qm-score-num').textContent=`${emoji} Score: ${sc} / ${total}`;document.getElementById('qm-score-sub').textContent=sc>=7?'Napakahusay!':sc>=5?'Magaling! Kaya mo pa!':'Subukan ulit, kaya mo yan!';banner.className=`qm-score-banner show ${cls}`;}
+function qmRenderSummary(){const summary=document.getElementById('qm-summary');const keys=Object.keys(qmScores);if(!keys.length){summary.innerHTML='';summary.className='';return;}summary.innerHTML=keys.map(qn=>{const sc=qmScores[qn];const cls=sc>=7?'qm-sum-good':sc>=5?'qm-sum-ok':'qm-sum-bad';return `<div class="qm-sum-card"><div class="qm-sum-label">Quiz ${qn}</div><div class="qm-sum-score ${cls}">${sc}/10</div></div>`;}).join('');summary.className='show';}
+
+
+// ══ QUIZ RECORDS (Excel-style editable grid) ══
+function scClass(v){const n=parseInt(v);if(v===''||v===null||v===undefined||isNaN(n))return 'sc-X';if(n===20)return 'sc-M';if(n>=18)return 'sc-C';if(n>=15)return 'sc-W';if(n>=12)return 'sc-A';if(n>=6)return 'sc-L';return 'sc-N';}
+
+function buildQRTable(){
+  // Build the full QR table using DOM — no inline event strings, proper JS closures
+  const qNames=Object.keys(Q);
+  const males=[],females=[];
+  students.forEach((s,i)=>{if(studentGender[i]==='M')males.push({s,i});else females.push({s,i});});
+  males.sort((a,b)=>a.s.localeCompare(b.s));
+  females.sort((a,b)=>a.s.localeCompare(b.s));
+
+  const wrap=document.createElement('div');
+  wrap.className='qr-grid-wrap';
+  const table=document.createElement('table');
+  table.className='qr-table';
+
+  // THEAD
+  const thead=document.createElement('thead');
+  const hrow=document.createElement('tr');
+  ['#','Name'].forEach(t=>{const th=document.createElement('th');th.className='name-col';th.style.minWidth=t==='Name'?'130px':'24px';th.textContent=t;hrow.appendChild(th);});
+
+  qNames.forEach((qn,qi)=>{
+    const th=document.createElement('th');
+    th.style.cssText='position:relative;padding:6px 8px;min-width:58px;';
+    const inner=document.createElement('div');
+    inner.style.cssText='display:flex;flex-direction:column;align-items:center;gap:3px;';
+
+    // Rename input
+    const inp=document.createElement('input');
+    inp.className='qr-name-input';
+    inp.value=qn;
+    inp.style.cssText='width:54px;text-align:center;background:transparent;border:1px solid transparent;border-radius:5px;font-size:10px;font-weight:700;color:var(--text2);font-family:"Plus Jakarta Sans",sans-serif;padding:2px 3px;cursor:pointer;';
+    inp.addEventListener('focus',function(){this.style.borderColor='var(--accent)';this.style.background='var(--surface)';});
+    inp.addEventListener('blur',function(){this.style.borderColor='transparent';this.style.background='transparent';});
+    inp.addEventListener('change',function(){
+      const newName=this.value.trim();
+      if(!newName||newName===qn)return;
+      const entries=Object.entries(Q);
+      Q={};
+      entries.forEach(([k,v],idx)=>{Q[idx===qi?newName:k]=v;});
+      if(AQ===qn)AQ=newName;
+      renderQT();renderGlobalStats();
+      qrRefreshModal();
+      toast('Renamed to '+newName);
+    });
+
+    // Delete button
+    const del=document.createElement('button');
+    del.innerHTML='&times;';
+    del.title='Delete '+qn;
+    del.style.cssText='background:none;border:none;color:var(--text3);cursor:pointer;font-size:12px;line-height:1;padding:1px 4px;border-radius:3px;';
+    del.addEventListener('mouseenter',function(){this.style.color='var(--red)';});
+    del.addEventListener('mouseleave',function(){this.style.color='var(--text3)';});
+    del.addEventListener('click',function(){
+      const keys=Object.keys(Q);
+      if(keys.length<=1){toast('Cannot delete last quiz!');return;}
+      delete Q[qn];
+      if(AQ===qn)AQ=Object.keys(Q)[0];
+      renderQT();renderGlobalStats();
+      qrRefreshModal();
+      toast(qn+' deleted!');
+    });
+
+    inner.appendChild(inp);
+    inner.appendChild(del);
+    th.appendChild(inner);
+    hrow.appendChild(th);
+  });
+
+  ['Progress','Mastery'].forEach(t=>{const th=document.createElement('th');th.textContent=t;hrow.appendChild(th);});
+  thead.appendChild(hrow);
+  table.appendChild(thead);
+
+  // TBODY
+  const tbody=document.createElement('tbody');
+
+  function addGenderSection(list,label){
+    if(!list.length)return;
+    const gRow=document.createElement('tr');
+    gRow.className='qr-gender-hdr';
+    const gTd=document.createElement('td');
+    gTd.colSpan=qNames.length+4;
+    gTd.style.textAlign='left';
+    gTd.textContent=label;
+    gRow.appendChild(gTd);
+    tbody.appendChild(gRow);
+
+    list.forEach((item,pos)=>{
+      const i=item.i;
+      const row=document.createElement('tr');
+
+      // # cell
+      const numTd=document.createElement('td');
+      numTd.className='name-col nm';
+      numTd.textContent=pos+1;
+      row.appendChild(numTd);
+
+      // Name cell
+      const nameTd=document.createElement('td');
+      nameTd.className='name-col';
+      nameTd.style.cssText='font-size:11px;font-weight:600;';
+      nameTd.textContent=item.s;
+      row.appendChild(nameTd);
+
+      // Score cells
+      const scoreNums=[];
+      qNames.forEach((qn)=>{
+        const sc=Q[qn][i];
+        const n=parseInt(sc);
+        if(!isNaN(n))scoreNums.push(n);
+        const td=document.createElement('td');
+        td.className=scClass(sc);
+        td.style.padding='3px 5px';
+
+        const sinp=document.createElement('input');
+        sinp.type='number';sinp.min=0;sinp.max=20;
+        sinp.value=(sc===''||sc===null||sc===undefined||isNaN(n))?'':n;
+        sinp.placeholder='—';
+        sinp.style.cssText='width:42px;text-align:center;background:transparent;border:1px solid transparent;border-radius:5px;font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:700;color:inherit;padding:2px 3px;';
+        sinp.addEventListener('input',function(){if(this.value>20)this.value=20;if(this.value<0)this.value=0;});
+        sinp.addEventListener('focus',function(){this.style.borderColor='var(--accent)';this.style.background='var(--surface)';this.style.color='var(--text)';});
+        sinp.addEventListener('blur',function(){
+          this.style.borderColor='transparent';this.style.background='transparent';this.style.color='inherit';
+          const newVal=this.value===''?'':Math.min(20,Math.max(0,parseInt(this.value)||0));
+          Q[qn][i]=newVal;
+          td.className=scClass(newVal);
+          liveS(i,newVal);
+          renderGlobalStats();
+        });
+        td.appendChild(sinp);
+        row.appendChild(td);
+      });
+
+      // Progress
+      const avg=scoreNums.length?(scoreNums.reduce((a,b)=>a+b,0)/scoreNums.length):null;
+      const pct=avg!==null?Math.min(100,Math.round(avg/20*100)):0;
+      let barC='var(--red)';if(pct>=90)barC='var(--green)';else if(pct>=75)barC='var(--accent)';else if(pct>=55)barC='var(--yellow)';else if(pct>=30)barC='var(--orange)';
+      const progTd=document.createElement('td');progTd.className='prog-col';
+      progTd.innerHTML=`<div style="display:flex;align-items:center;gap:5px"><div class="pw" style="width:50px"><div class="pf" style="width:${pct}%;background:${barC}"></div></div><span style="font-size:10px;color:var(--text3)">${avg!==null?avg.toFixed(1):'—'}</span></div>`;
+      row.appendChild(progTd);
+
+      // Mastery
+      const m=avg!==null?gMFromAvg(avg):{l:'No Score',c:'bX'};
+      const masTd=document.createElement('td');
+      masTd.innerHTML=`<span class="badge ${m.c}">${m.l}</span>`;
+      row.appendChild(masTd);
+
+      tbody.appendChild(row);
+    });
+  }
+
+  addGenderSection(males,'👦 Male');
+  addGenderSection(females,'👧 Female');
+  table.appendChild(tbody);
+  wrap.appendChild(table);
+  return wrap;
+}
+
+function buildQRBody(){
+  // Returns HTML string wrapper — actual table built via DOM in qrRefreshModal
+  return '<div id="qrTableContainer"></div>';
+}
+
+function qrRefreshModal(){
+  const body=document.getElementById('mainModalBody');
+  const footer=document.getElementById('mainModalFooter');
+  if(!body)return;
+  // Rebuild body shell
+  body.innerHTML='<div id="qrTableContainer"></div>';
+  // Mount DOM-built table
+  const container=document.getElementById('qrTableContainer');
+  container.appendChild(buildQRTable());
+  // Rebuild footer
+  if(footer){
+    footer.innerHTML='';
+    const addBtn=document.createElement('button');
+    addBtn.className='btn bAdd';addBtn.textContent='+ Add Quiz';
+    addBtn.addEventListener('click',qrAddQuiz);
+    const saveBtn=document.createElement('button');
+    saveBtn.className='btn bSave';saveBtn.style.marginLeft='4px';saveBtn.textContent='💾 Save Changes';
+    saveBtn.addEventListener('click',saveQR);
+    const hint=document.createElement('span');
+    hint.style.cssText='font-size:11px;color:var(--text2);margin-left:8px;';
+    hint.textContent='Click score cells to edit • Edit quiz names inline';
+    footer.appendChild(addBtn);footer.appendChild(saveBtn);footer.appendChild(hint);
+  }
+}
+
+function qrAddQuiz(){
+  const name='Quiz '+(Object.keys(Q).length+1);
+  Q[name]=new Array(students.length).fill('');
+  AQ=name;
+  renderQT();renderGlobalStats();
+  qrRefreshModal();
+  toast(name+' added!');
+}
+
+function qrScoreChange(qName,studentIdx,val,inputEl){
+  // kept for compatibility but logic now inline in DOM builder
+}
+
+// ══ SAVE / MISC ══
+function saveQR(){
+  renderQT();renderGlobalStats();
+  toast('Quiz records saved!');
+}
+
+function clearAllModules(){
+  if(!confirm('Delete ALL saved modules?'))return;
+  reviewPDFs.forEach(m=>{try{URL.revokeObjectURL(m.url);}catch(e){}});
+  reviewPDFs=[];activePDFIdx=-1;
+  localStorage.removeItem('smartsked_modules');
+  if(currentModal==='review')document.getElementById('mainModalBody').innerHTML=buildReviewBody();
+  toast('All modules cleared');
+}
+
+
+// ══ INTRO ══
+(function(){
+  setTimeout(function(){
+    const s=document.getElementById('intro-screen');
+    s.classList.add('fade-out');
+    setTimeout(()=>s.remove(),800);
+  }, 5000);
+})();
+
+// ══ INIT ══
+loadModulesFromStorage();
+syncC();renderQT();renderGlobalStats();
+</script>
+</body>
+</html>
